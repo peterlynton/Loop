@@ -94,7 +94,7 @@ final class BolusInterfaceController: WKInterfaceController, IdentifiableClass {
             }
 
             let recommendedPickerValue = pickerValueFromBolusValue(recommendedBolus)
-            pickerValue = Int(Double(recommendedPickerValue) * 0.75)
+            pickerValue = Int(Double(recommendedPickerValue) * 1.0)
 
             if let valueString = formatter.string(from: NSNumber(value: recommendedBolus)) {
                 recommendedValueLabel.setText(String(format: NSLocalizedString("Rec: %@ U", comment: "The label and value showing the recommended bolus"), valueString).localizedUppercase)
@@ -137,7 +137,9 @@ final class BolusInterfaceController: WKInterfaceController, IdentifiableClass {
 
             do {
                 try WCSession.default.sendBolusMessage(bolus) { (error) in
-                    ExtensionDelegate.shared().present(error)
+                    DispatchQueue.main.async {
+                        ExtensionDelegate.shared().present(error)
+                    }
                 }
             } catch {
                 presentAlert(
